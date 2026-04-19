@@ -1,0 +1,148 @@
+
+# ============================================================
+# Customer Churn Prediction - Project Configuration
+# ============================================================
+
+project:
+  name: "Customer Churn Prediction"
+  version: "1.0.0"
+  description: "End-to-end ML pipeline for predicting telecom customer churn"
+  random_state: 42
+
+# ---------------------------------------------------------------
+# Data Configuration
+# ---------------------------------------------------------------
+data:
+  raw_path: "data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv"
+  processed_path: "data/processed/churn_processed.csv"
+  test_size: 0.20
+  validation_size: 0.10
+  stratify: true
+  target_column: "Churn"
+  id_column: "customerID"
+
+# ---------------------------------------------------------------
+# Preprocessing
+# ---------------------------------------------------------------
+preprocessing:
+  numeric_features:
+    - "tenure"
+    - "MonthlyCharges"
+    - "TotalCharges"
+  categorical_features:
+    - "gender"
+    - "Partner"
+    - "Dependents"
+    - "PhoneService"
+    - "MultipleLines"
+    - "InternetService"
+    - "OnlineSecurity"
+    - "OnlineBackup"
+    - "DeviceProtection"
+    - "TechSupport"
+    - "StreamingTV"
+    - "StreamingMovies"
+    - "Contract"
+    - "PaperlessBilling"
+    - "PaymentMethod"
+  binary_features:
+    - "SeniorCitizen"
+  fill_strategy:
+    numeric: "median"
+    categorical: "mode"
+  scaling: "standard"  # standard | minmax | robust
+
+# ---------------------------------------------------------------
+# Feature Engineering
+# ---------------------------------------------------------------
+feature_engineering:
+  tenure_bins: [0, 12, 24, 48, 60, 200]
+  tenure_labels: ["0-12mo", "13-24mo", "25-48mo", "49-60mo", "60mo+"]
+  engagement_weights:
+    online_security: 1
+    online_backup: 1
+    device_protection: 1
+    tech_support: 2
+    streaming_tv: 0.5
+    streaming_movies: 0.5
+
+# ---------------------------------------------------------------
+# Model Training
+# ---------------------------------------------------------------
+training:
+  cv_folds: 5
+  scoring_metric: "roc_auc"
+  use_smote: true
+  smote_sampling_strategy: "auto"
+  n_jobs: -1
+
+  models:
+    logistic_regression:
+      C: [0.01, 0.1, 1, 10]
+      solver: ["lbfgs"]
+      max_iter: [1000]
+      class_weight: ["balanced", null]
+
+    random_forest:
+      n_estimators: [100, 200]
+      max_depth: [null, 5, 10]
+      min_samples_split: [2, 5]
+      class_weight: ["balanced", null]
+
+    xgboost:
+      n_estimators: [100, 200]
+      max_depth: [3, 5, 7]
+      learning_rate: [0.05, 0.1, 0.2]
+      subsample: [0.8, 1.0]
+      scale_pos_weight: [1, 2, 3]
+
+# ---------------------------------------------------------------
+# Evaluation
+# ---------------------------------------------------------------
+evaluation:
+  threshold: 0.5
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1"
+    - "roc_auc"
+    - "average_precision"
+  plots_dir: "reports/figures"
+
+# ---------------------------------------------------------------
+# Model Persistence
+# ---------------------------------------------------------------
+models:
+  save_dir: "models"
+  best_model_name: "best_churn_model.joblib"
+  pipeline_name: "churn_pipeline.joblib"
+  encoder_name: "label_encoders.joblib"
+
+# ---------------------------------------------------------------
+# API Configuration
+# ---------------------------------------------------------------
+api:
+  host: "0.0.0.0"
+  port: 8000
+  title: "Churn Prediction API"
+  version: "1.0.0"
+  description: "REST API for predicting customer churn probability"
+  churn_threshold: 0.5
+  model_path: "models/best_churn_model.joblib"
+
+# ---------------------------------------------------------------
+# Streamlit Dashboard
+# ---------------------------------------------------------------
+dashboard:
+  page_title: "Churn Predictor Dashboard"
+  api_url: "http://localhost:8000"
+
+# ---------------------------------------------------------------
+# Logging
+# ---------------------------------------------------------------
+logging:
+  level: "INFO"
+  log_dir: "logs"
+  log_file: "churn_pipeline.log"
+  format: "%(asctime)s | %(levelname)s | %(name)s | %(message)s"

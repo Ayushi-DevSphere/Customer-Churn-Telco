@@ -1,0 +1,157 @@
+{
+  "logistic_regression": {
+    "roc_auc": 0.8371,
+    "average_precision": 0.6205,
+    "accuracy": 0.7438,
+    "precision": 0.5117,
+    "recall": 0.762,
+    "f1": 0.6122,
+    "threshold": 0.5,
+    "classification_report": {
+      "0": {
+        "precision": 0.8955399061032864,
+        "recall": 0.7371980676328502,
+        "f1-score": 0.8086910439851617,
+        "support": 1035.0
+      },
+      "1": {
+        "precision": 0.5116696588868941,
+        "recall": 0.7620320855614974,
+        "f1-score": 0.6122448979591837,
+        "support": 374.0
+      },
+      "accuracy": 0.7437899219304471,
+      "macro avg": {
+        "precision": 0.7036047824950902,
+        "recall": 0.7496150765971739,
+        "f1-score": 0.7104679709721726,
+        "support": 1409.0
+      },
+      "weighted avg": {
+        "precision": 0.7936467389926187,
+        "recall": 0.7437899219304471,
+        "f1-score": 0.7565470705190752,
+        "support": 1409.0
+      }
+    }
+  },
+  "random_forest": {
+    "roc_auc": 0.8384,
+    "average_precision": 0.6231,
+    "accuracy": 0.748,
+    "precision": 0.5168,
+    "recall": 0.7834,
+    "f1": 0.6227,
+    "threshold": 0.5,
+    "classification_report": {
+      "0": {
+        "precision": 0.9038004750593824,
+        "recall": 0.7352657004830918,
+        "f1-score": 0.8108684070324986,
+        "support": 1035.0
+      },
+      "1": {
+        "precision": 0.5167548500881834,
+        "recall": 0.7834224598930482,
+        "f1-score": 0.6227417640807651,
+        "support": 374.0
+      },
+      "accuracy": 0.7480482611781405,
+      "macro avg": {
+        "precision": 0.710277662573783,
+        "recall": 0.75934408018807,
+        "f1-score": 0.7168050855566319,
+        "support": 1409.0
+      },
+      "weighted avg": {
+        "precision": 0.8010644468555297,
+        "recall": 0.7480482611781405,
+        "f1-score": 0.7609327331758994,
+        "support": 1409.0
+      }
+    }
+  },
+  "xgboost": {
+    "roc_auc": 0.8428,
+    "average_precision": 0.6515,
+    "accuracy": 0.7835,
+    "precision": 0.5793,
+    "recall": 0.6738,
+    "f1": 0.623,
+    "threshold": 0.5,
+    "classification_report": {
+      "0": {
+        "precision": 0.8747433264887063,
+        "recall": 0.8231884057971014,
+        "f1-score": 0.8481831757093081,
+        "support": 1035.0
+      },
+      "1": {
+        "precision": 0.5793103448275863,
+        "recall": 0.6737967914438503,
+        "f1-score": 0.622991347342398,
+        "support": 374.0
+      },
+      "accuracy": 0.7835344215755855,
+      "macro avg": {
+        "precision": 0.7270268356581463,
+        "recall": 0.7484925986204758,
+        "f1-score": 0.7355872615258531,
+        "support": 1409.0
+      },
+      "weighted avg": {
+        "precision": 0.7963246358277702,
+        "recall": 0.7835344215755855,
+        "f1-score": 0.7884090495139751,
+        "support": 1409.0
+      }
+    }
+  },
+  "business_insights": {
+    "high_risk_count": 349,
+    "high_risk_pct": 24.77,
+    "monthly_revenue_at_risk": 27815.15,
+    "top_churn_drivers": [
+      {
+        "feature": "tenure",
+        "importance": 0.42580842000093005
+      },
+      {
+        "feature": "contract_group",
+        "importance": 0.3004690097456192
+      },
+      {
+        "feature": "PaymentMethod_Electronic check",
+        "importance": 0.277026539620713
+      },
+      {
+        "feature": "tenure_bucket_code",
+        "importance": 0.2524646855044411
+      },
+      {
+        "feature": "is_month_to_month",
+        "importance": 0.2195184451312108
+      },
+      {
+        "feature": "MultipleLines_No",
+        "importance": 0.21556578033340804
+      },
+      {
+        "feature": "OnlineSecurity_No",
+        "importance": 0.20977491829712203
+      },
+      {
+        "feature": "InternetService_Fiber optic",
+        "importance": 0.20483450109943005
+      },
+      {
+        "feature": "charges_per_service",
+        "importance": 0.19882581739245472
+      },
+      {
+        "feature": "PaperlessBilling_No",
+        "importance": 0.18422621700061806
+      }
+    ]
+  }
+}

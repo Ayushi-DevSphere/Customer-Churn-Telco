@@ -1,0 +1,9 @@
+{
+  "best_model": "logistic_regression",
+  "cv_scores": {
+    "logistic_regression": 0.8404239090647628,
+    "random_forest": 0.8390631399453093,
+    "xgboost": 0.8389349275239903
+  },
+  "random_state": 42
+}
