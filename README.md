@@ -390,7 +390,7 @@ All three models were trained with SMOTE oversampling and class-weight tuning to
 
 > Logistic Regression achieves near-equivalent AUC (0.8371) and highest recall (0.76), making it a strong alternative when model explainability is a priority.
 
-![Model Comparison — All Three Models](screenshots/docker_containers.jpeg)
+![Model Comparison — All Three Models](screenshots/dashboard_model_performance.jpeg)
 
 ---
 
@@ -463,4 +463,4 @@ pytest tests/test_preprocessing.py -v
 
 ## 📄 License
 
-MIT License — free to use for educational and commercial purposes.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
