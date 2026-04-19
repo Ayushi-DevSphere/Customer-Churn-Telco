@@ -1,7 +1,7 @@
 # 📊 Customer Churn Prediction — Production ML Pipeline
 
-> **An end-to-end, production-grade machine learning system for predicting telecom customer churn.**  
-> Includes feature engineering, multi-model training with SMOTE, a REST API, and an interactive Streamlit dashboard.
+> **An end-to-end, production-grade machine learning system for predicting telecom customer churn.**
+> Includes feature engineering, multi-model training with SMOTE, a REST API, and an interactive Streamlit dashboard — fully containerized with Docker.
 
 ---
 
@@ -61,18 +61,18 @@ Customer churn is one of the most costly problems for telecom businesses. Losing
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    DATA LAYER                                    │
-│  Raw CSV → Cleaning → Imputation → Feature Engineering         │
+│  Raw CSV → Cleaning → Imputation → Feature Engineering          │
 └─────────────────────┬───────────────────────────────────────────┘
                        │
 ┌─────────────────────▼───────────────────────────────────────────┐
 │                    ML PIPELINE                                   │
-│  ColumnTransformer (Scale + OneHot)                            │
+│  ColumnTransformer (Scale + OneHot)                             │
 │  ↓                                                              │
-│  SMOTE (class imbalance handling)                              │
+│  SMOTE (class imbalance handling)                               │
 │  ↓                                                              │
-│  GridSearchCV over {LogReg, RandomForest, XGBoost}             │
+│  GridSearchCV over {LogReg, RandomForest, XGBoost}              │
 │  ↓                                                              │
-│  Best model selected by CV ROC-AUC                             │
+│  Best model selected by CV ROC-AUC                              │
 └─────────────────────┬───────────────────────────────────────────┘
                        │
         ┌──────────────┴──────────────┐
@@ -158,7 +158,7 @@ pip install -r requirements.txt
 python download_data.py
 ```
 
-> Alternatively, download from [Kaggle](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)  
+> Alternatively, download from [Kaggle](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
 > and place at `data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv`
 
 ---
@@ -252,7 +252,7 @@ curl -X POST "http://localhost:8000/predict" \
 }
 ```
 
-### Python client
+### Python Client
 
 ```python
 import requests
@@ -314,11 +314,31 @@ Open: **http://localhost:8501**
 - 💼 Business insights (revenue at risk, top drivers)
 - 🔌 Toggle between API mode and direct model mode
 
+### Dashboard Screenshots
+
+**Model Performance & Insights Tab** — side-by-side comparison of all three models across ROC-AUC, F1, Precision, and Recall:
+
+![Model Performance & Insights](screenshots/WhatsApp_Image_2026-04-18_at_6_50_12_AM__2_.jpeg)
+
+**Business Insights** — 349 high-risk customers identified, $27,815 monthly revenue at risk, and the Top 10 churn drivers ranked by feature importance:
+
+![Business Insights & Top Churn Drivers](screenshots/WhatsApp_Image_2026-04-18_at_6_50_12_AM__1_.jpeg)
+
+**Evaluation Plots** — Churn probability distribution, confusion matrix, top-20 feature importances, and precision-recall curve for Logistic Regression:
+
+![Evaluation Plots](screenshots/WhatsApp_Image_2026-04-18_at_6_50_13_AM.jpeg)
+
+**Feature Importance & ROC Curve** — Logistic Regression AUC = 0.8371, alongside detailed feature importance scores:
+
+![ROC Curve & Feature Importance](screenshots/WhatsApp_Image_2026-04-18_at_6_50_12_AM.jpeg)
+
 ---
 
 ## 🐳 Docker Deployment
 
 ### Build & Run
+
+The project ships with a production-ready `Dockerfile` and `docker-compose.yml` for zero-friction deployment.
 
 ```bash
 # Start both API and Dashboard
@@ -329,6 +349,18 @@ docker-compose up --build
 # API Docs:  http://localhost:8000/docs
 ```
 
+### Docker Build Details
+
+The Docker build completes in ~3m 25s on standard hardware (linux/amd64). Build stages are cached and parallelized across layers for fast rebuilds after code changes.
+
+![Docker Build — Churn (production)](screenshots/WhatsApp_Image_2026-04-18_at_6_50_11_AM.jpeg)
+
+### Running Containers
+
+After `docker-compose up`, two containers are active — `churn-api` on port 8000 and `churn-dashboard` on port 8501:
+
+![Docker Compose — Running Containers](screenshots/WhatsApp_Image_2026-04-18_at_6_50_11_AM__3_.jpeg)
+
 ### API only
 
 ```bash
@@ -336,36 +368,74 @@ docker build -t churn-api .
 docker run -p 8000:8000 -v $(pwd)/models:/app/models churn-api
 ```
 
+> **Note:** The dashboard logs a deprecation warning about `use_container_width`. Replace `use_container_width=True` with `width='stretch'` in `dashboard/app.py` to silence it (the parameter will be removed in a future Streamlit release).
+
 ---
 
 ## 📈 Model Performance
 
+All three models were trained with SMOTE oversampling and class-weight tuning to handle the ~26.5% churn imbalance. Hyperparameters were selected via 5-fold GridSearchCV optimizing ROC-AUC.
+
 | Model | ROC-AUC | F1 | Precision | Recall |
 |---|---|---|---|---|
-| Logistic Regression | ~0.84 | ~0.61 | ~0.67 | ~0.56 |
-| Random Forest | ~0.83 | ~0.60 | ~0.70 | ~0.53 |
-| **XGBoost** | **~0.84** | **~0.63** | **~0.68** | **~0.59** |
+| Logistic Regression | 0.8371 | 0.6122 | 0.5117 | 0.76 |
+| Random Forest | 0.8384 | 0.6227 | 0.5168 | 0.78 |
+| **XGBoost** | **0.8428** | **0.6230** | **0.5793** | **0.67** |
 
-> Exact values depend on random seed and hyperparameter tuning results.  
-> Models use SMOTE + class_weight tuning to handle the ~26.5% churn imbalance.
+**XGBoost** is selected as the production model due to its superior ROC-AUC and best precision-recall balance overall.
+
+> Logistic Regression achieves near-equivalent AUC (0.8371) and highest recall (0.76), making it a strong alternative when model explainability is a priority.
+
+![Model Comparison — All Three Models](screenshots/WhatsApp_Image_2026-04-18_at_6_50_11_AM__2_.jpeg)
 
 ---
 
 ## 💼 Business Insights
 
-**Top Churn Drivers** (typical findings):
-1. `Contract` type — Month-to-month customers churn ~3x more
-2. `tenure` — First 12 months are the highest risk window
-3. `InternetService` — Fiber optic has elevated churn rate
-4. `TotalCharges` — High total charges correlate with churn
-5. `engagement_score` — Low service adoption → higher churn
-6. `OnlineSecurity` — Customers without security are more likely to leave
-7. `PaymentMethod` — Electronic check users churn ~2x more
+**Top Churn Drivers** (from feature importance analysis):
+
+| Rank | Feature | Business Meaning |
+|------|---------|-----------------|
+| 1 | `tenure` | Early customers (< 12 months) are the highest-risk cohort |
+| 2 | `contract_group` | Month-to-month customers churn ~3x more than annual subscribers |
+| 3 | `PaymentMethod_Electronic check` | Electronic check users churn ~2x more vs. auto-pay |
+| 4 | `tenure_bucket_code` | Engineered tenure segments amplify churn signal |
+| 5 | `is_month_to_month` | Binary flag for highest-risk contract type |
+| 6 | `OnlineSecurity_No` | Customers without security add-ons are more likely to leave |
+| 7 | `InternetService_Fiber optic` | Fiber optic has elevated churn despite premium pricing |
+| 8 | `charges_per_service` | High cost-per-service signals dissatisfaction |
+
+**Live Business Metrics (test set):**
+- 🔴 **349 High-Risk Customers** identified (24.8% of test set)
+- 💰 **$27,815 Monthly Revenue at Risk**
 
 **Retention Strategies:**
 - Offer 1-year contract discounts to month-to-month customers in months 1–6
 - Bundle security + tech support at onboarding for fiber customers
 - Implement auto-pay incentives to shift away from electronic checks
+- Trigger proactive outreach for customers with tenure < 12 months
+
+---
+
+## 🔧 Configuration
+
+All parameters live in `config/config.yaml`. Modify without touching source code:
+
+```yaml
+training:
+  cv_folds: 5
+  use_smote: true
+  models:
+    xgboost:
+      max_depth: [3, 5, 7]
+      learning_rate: [0.05, 0.1, 0.2]
+
+api:
+  churn_threshold: 0.5   # Lower for higher recall
+  port: 8000
+```
+
+**Threshold tuning tip:** Lowering `churn_threshold` to 0.4 increases recall at the cost of more false positives — useful when the cost of missing a churner outweighs the cost of unnecessary retention outreach.
 
 ---
 
@@ -387,30 +457,6 @@ pytest tests/test_preprocessing.py -v
 
 ---
 
-## 🔧 Configuration
-
-All parameters live in `config/config.yaml`. Modify without touching code:
-
-```yaml
-training:
-  cv_folds: 5
-  use_smote: true
-  models:
-    xgboost:
-      max_depth: [3, 5, 7]
-      learning_rate: [0.05, 0.1, 0.2]
-
-api:
-  churn_threshold: 0.5   # Lower for higher recall
-  port: 8000
-```
-
----
-
 ## 📄 License
 
-MIT License. Free to use for educational and commercial purposes.
-
----
-
-*Built with ❤️ using Python, scikit-learn, XGBoost, FastAPI, and Streamlit*
+MIT License — free to use for educational and commercial purposes.
