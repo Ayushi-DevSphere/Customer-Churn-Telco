@@ -318,19 +318,23 @@ Open: **http://localhost:8501**
 
 **Model Performance & Insights Tab** — side-by-side comparison of all three models across ROC-AUC, F1, Precision, and Recall:
 
-![Model Performance & Insights](screenshots/WhatsApp_Image_2026-04-18_at_6_50_12_AM__2_.jpeg)
+![Model Performance & Insights](screenshots/dashboard_model_performance.jpeg)
 
 **Business Insights** — 349 high-risk customers identified, $27,815 monthly revenue at risk, and the Top 10 churn drivers ranked by feature importance:
 
-![Business Insights & Top Churn Drivers](screenshots/WhatsApp_Image_2026-04-18_at_6_50_12_AM__1_.jpeg)
+![Business Insights & Top Churn Drivers](screenshots/dashboard_business_insights.jpeg)
 
 **Evaluation Plots** — Churn probability distribution, confusion matrix, top-20 feature importances, and precision-recall curve for Logistic Regression:
 
-![Evaluation Plots](screenshots/WhatsApp_Image_2026-04-18_at_6_50_13_AM.jpeg)
+![Evaluation Plots](screenshots/dashboard_evaluation_plots.jpeg)
 
-**Feature Importance & ROC Curve** — Logistic Regression AUC = 0.8371, alongside detailed feature importance scores:
+**Feature Importance & PR Curve (scrolled)** — Full top-20 feature importance list alongside the Precision-Recall curve (AP = 0.6205):
 
-![ROC Curve & Feature Importance](screenshots/WhatsApp_Image_2026-04-18_at_6_50_12_AM.jpeg)
+![Feature Importance & PR Curve](screenshots/dashboard_feature_importance.jpeg)
+
+**ROC Curve & Model Comparison** — Logistic Regression AUC = 0.8371, with the model comparison chart visible alongside:
+
+![ROC Curve & Model Comparison](screenshots/dashboard_roc_model_comparison.jpeg)
 
 ---
 
@@ -353,13 +357,13 @@ docker-compose up --build
 
 The Docker build completes in ~3m 25s on standard hardware (linux/amd64). Build stages are cached and parallelized across layers for fast rebuilds after code changes.
 
-![Docker Build — Churn (production)](screenshots/WhatsApp_Image_2026-04-18_at_6_50_11_AM.jpeg)
+![Docker Build — Churn (production)](screenshots/docker_build.jpeg)
 
 ### Running Containers
 
 After `docker-compose up`, two containers are active — `churn-api` on port 8000 and `churn-dashboard` on port 8501:
 
-![Docker Compose — Running Containers](screenshots/WhatsApp_Image_2026-04-18_at_6_50_11_AM__3_.jpeg)
+![Docker Compose — Running Containers](screenshots/docker_containers.jpeg)
 
 ### API only
 
@@ -386,7 +390,7 @@ All three models were trained with SMOTE oversampling and class-weight tuning to
 
 > Logistic Regression achieves near-equivalent AUC (0.8371) and highest recall (0.76), making it a strong alternative when model explainability is a priority.
 
-![Model Comparison — All Three Models](screenshots/WhatsApp_Image_2026-04-18_at_6_50_11_AM__2_.jpeg)
+![Model Comparison — All Three Models](screenshots/docker_containers.jpeg)
 
 ---
 
